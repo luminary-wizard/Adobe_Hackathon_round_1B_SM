@@ -1,0 +1,27 @@
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files to the container
+COPY . .
+
+# Install system dependencies needed for PyMuPDF and other packages
+RUN apt-get update && apt-get install -y \
+    gcc \
+    build-essential \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    spacy==3.7.2 \
+    sentence-transformers==2.2.2 \
+    pymupdf==1.23.22
+
+
+# Download spaCy English model
+RUN python -m spacy download en_core_web_sm
+
+# Run your script
+CMD ["python", "round_1b.py"]
